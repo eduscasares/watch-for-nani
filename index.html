@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown Timer</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #282c34;
+        color: #61dafb;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .countdown {
+        text-align: center;
+      }
+
+      .time {
+        font-size: 3rem;
+        margin: 10px 0;
+      }
+
+      .label {
+        font-size: 1.2rem;
+      }
+
+      .loading {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .loading svg {
+        width: 50px;
+        height: 50px;
+        animation: rotate 1s linear infinite;
+      }
+
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .animated-image {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-image: url("https://m.media-amazon.com/images/I/71ao30YIugL._AC_SY879_.jpg");
+        background-size: cover;
+        background-position: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="animated-image" id="animatedImage"></div>
+    <div class="countdown">
+      <div class="loading" id="loading">
+        <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+          <circle
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke="#61dafb"
+            stroke-width="4"
+            stroke-dasharray="31.4 31.4"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <h1>Countdown to December 27</h1>
+      <div class="time" id="days">0<span class="label"> Days</span></div>
+      <div class="time" id="hours">0<span class="label"> Hours</span></div>
+      <div class="time" id="minutes">0<span class="label"> Minutes</span></div>
+      <div class="time" id="seconds">0<span class="label"> Seconds</span></div>
+    </div>
+
+    <script>
+      function updateCountdown() {
+        const targetDate = new Date("2024-12-27T00:00:00");
+        const now = new Date();
+        const diff = targetDate - now;
+
+        const loadingElement = document.getElementById("loading");
+        loadingElement.style.display = "none";
+
+        if (diff <= 0) {
+          document.querySelector(".countdown").innerHTML =
+            "<h1>The countdown has ended!</h1>";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById(
+          "days"
+        ).innerHTML = `${days}<span class="label"> Days</span>`;
+        document.getElementById(
+          "hours"
+        ).innerHTML = `${hours}<span class="label"> Hours</span>`;
+        document.getElementById(
+          "minutes"
+        ).innerHTML = `${minutes}<span class="label"> Minutes</span>`;
+        document.getElementById(
+          "seconds"
+        ).innerHTML = `${seconds}<span class="label"> Seconds</span>`;
+      }
+
+      function animateImage() {
+        const img = document.getElementById("animatedImage");
+        let x = Math.random() * window.innerWidth;
+        let y = Math.random() * window.innerHeight;
+        let dx = 2;
+        let dy = 2;
+        const imgWidth = img.offsetWidth;
+        const imgHeight = img.offsetHeight;
+
+        function move() {
+          x += dx;
+          y += dy;
+
+          if (x + imgWidth > window.innerWidth || x < 0) {
+            dx = -dx;
+          }
+
+          if (y + imgHeight > window.innerHeight || y < 0) {
+            dy = -dy;
+          }
+
+          img.style.transform = `translate(${x}px, ${y}px)`;
+          requestAnimationFrame(move);
+        }
+
+        move();
+      }
+
+      document.getElementById("loading").style.display = "flex";
+      setTimeout(() => {
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        animateImage();
+      }, 500);
+    </script>
+  </body>
+</html>
